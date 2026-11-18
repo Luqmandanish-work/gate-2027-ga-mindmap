@@ -1,10 +1,11 @@
 import { CheckCircle2, ChevronRight, Clock, Circle, Focus, Layers, X } from 'lucide-react';
-import { BRANCH_PALETTES } from '../data/gaSyllabus';
-import type { MasteryStatus, NodeOrigin, SyllabusTreeNode } from '../types/syllabus';
+import { getBranchPalette } from '../data/gaSyllabus';
+import type { MasteryStatus, NodeOrigin, SyllabusTreeNode, ThemeMode } from '../types/syllabus';
 import { computeSubtreeStats, getBreadcrumbPath } from '../utils/treeHelpers';
 
 interface InspectorDrawerProps {
   node: SyllabusTreeNode | null;
+  theme: ThemeMode;
   byId: Map<string, SyllabusTreeNode>;
   parentById: Map<string, string | null>;
   masteryMap: Record<string, MasteryStatus>;
@@ -28,6 +29,7 @@ const ORIGIN_LABELS: Record<NodeOrigin, string> = {
 
 export function InspectorDrawer({
   node,
+  theme,
   byId,
   parentById,
   masteryMap,
@@ -42,7 +44,7 @@ export function InspectorDrawer({
 }: InspectorDrawerProps) {
   if (!node) return null;
 
-  const palette = BRANCH_PALETTES[node.branch];
+  const palette = getBranchPalette(node.branch, theme);
   const breadcrumbs = getBreadcrumbPath(node.id, byId, parentById);
   const stats = computeSubtreeStats(node, masteryMap);
   const isLeaf = !node.children || node.children.length === 0;
@@ -62,7 +64,7 @@ export function InspectorDrawer({
           <div className="flex flex-wrap items-center gap-1.5">
             <span
               className="font-mono-code rounded-md px-2 py-0.5 text-[11px] font-bold"
-              style={{ backgroundColor: palette.badgeBg, color: palette.accent }}
+              style={{ backgroundColor: palette.badgeBg, color: palette.badgeText }}
             >
               {node.code}
             </span>
@@ -134,9 +136,9 @@ export function InspectorDrawer({
           <div className="grid grid-cols-3 gap-1.5">
             {(
               [
-                { id: 'todo', label: 'To Do', icon: Circle, color: 'text-slate-400' },
-                { id: 'learning', label: 'Learning', icon: Clock, color: 'text-amber-400' },
-                { id: 'mastered', label: 'Mastered', icon: CheckCircle2, color: 'text-emerald-400' },
+                { id: 'todo', label: 'To Do', icon: Circle, color: 'var(--text-muted)' },
+                { id: 'learning', label: 'Learning', icon: Clock, color: 'var(--learning-ink)' },
+                { id: 'mastered', label: 'Mastered', icon: CheckCircle2, color: 'var(--mastered-ink)' },
               ] as const
             ).map((opt) => {
               const Icon = opt.icon;
@@ -156,13 +158,32 @@ export function InspectorDrawer({
                       ? onSetNodeMastery(node.id, opt.id)
                       : onSetSubtreeMastery(node, opt.id)
                   }
-                  className={`flex items-center justify-center gap-1 rounded-xl border px-2 py-2 text-[11.5px] font-semibold transition ${
+                  className="flex items-center justify-center gap-1 rounded-xl border px-2 py-2 text-[11.5px] font-semibold transition"
+                  style={
                     isActive
-                      ? 'border-sky-400/50 bg-sky-500/15 text-[var(--text-primary)]'
-                      : 'border-[var(--chip-border)] bg-[var(--chip-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
+                      ? {
+                          borderColor:
+                            opt.id === 'mastered'
+                              ? 'var(--mastered-color)'
+                              : opt.id === 'learning'
+                                ? 'var(--learning-color)'
+                                : 'var(--focus-color)',
+                          backgroundColor:
+                            opt.id === 'mastered'
+                              ? 'var(--mastered-bg)'
+                              : opt.id === 'learning'
+                                ? 'var(--learning-bg)'
+                                : 'var(--focus-bg)',
+                          color: 'var(--text-primary)',
+                        }
+                      : {
+                          borderColor: 'var(--chip-border)',
+                          backgroundColor: 'var(--chip-bg)',
+                          color: 'var(--text-secondary)',
+                        }
+                  }
                 >
-                  <Icon className={`h-3.5 w-3.5 ${opt.color}`} />
+                  <Icon className="h-3.5 w-3.5" style={{ color: opt.color }} />
                   <span>{opt.label}</span>
                 </button>
               );
@@ -203,7 +224,7 @@ export function InspectorDrawer({
                   <div className="flex min-w-0 items-center gap-2">
                     <span
                       className="font-mono-code shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
-                      style={{ backgroundColor: palette.badgeBg, color: palette.accent }}
+                      style={{ backgroundColor: palette.badgeBg, color: palette.badgeText }}
                     >
                       {child.code}
                     </span>

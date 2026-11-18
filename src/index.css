@@ -5,55 +5,75 @@
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --canvas-bg: #060811;
-  --canvas-dot: rgba(148, 163, 184, 0.16);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --canvas-bg: #0f152b;
+  --canvas-radial: radial-gradient(circle at 50% 44%, #172042 0%, #0f152b 58%, #0b1024 100%);
+  --canvas-dot: #2a3970;
+  --text-primary: #f1f5ff;
+  --text-secondary: #bac7e8;
+  --text-muted: #92a4d1;
 
-  --glass-bg: rgba(15, 23, 42, 0.56);
-  --glass-bg-elevated: rgba(17, 25, 45, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-rim: rgba(255, 255, 255, 0.24);
+  --glass-bg: rgba(27, 37, 75, 0.78);
+  --glass-bg-elevated: rgba(36, 50, 100, 0.86);
+  --glass-border: rgba(138, 154, 225, 0.28);
+  --glass-rim: rgba(255, 255, 255, 0.26);
   --glass-shadow:
-    0 24px 48px -14px rgba(0, 0, 0, 0.72),
-    0 8px 20px -6px rgba(0, 0, 0, 0.48),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    0 20px 44px -14px rgba(5, 8, 26, 0.72),
+    0 8px 20px -6px rgba(10, 16, 46, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(138, 154, 225, 0.08);
   --glass-shadow-hover:
-    0 32px 60px -12px rgba(0, 0, 0, 0.85),
-    0 14px 28px -8px rgba(0, 0, 0, 0.56),
+    0 28px 58px -12px rgba(5, 8, 26, 0.85),
+    0 14px 28px -8px rgba(17, 26, 72, 0.56),
     inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-  --hud-bg: rgba(11, 16, 30, 0.74);
-  --chip-bg: rgba(255, 255, 255, 0.06);
-  --chip-border: rgba(255, 255, 255, 0.12);
+    inset 0 -1px 0 rgba(138, 154, 225, 0.14);
+  --hud-bg: rgba(20, 28, 58, 0.84);
+  --chip-bg: rgba(129, 140, 248, 0.12);
+  --chip-border: rgba(138, 154, 225, 0.25);
+
+  --mastered-color: #3ce878;
+  --mastered-ink: #3ce878;
+  --mastered-bg: rgba(60, 232, 120, 0.16);
+  --learning-color: #ff8647;
+  --learning-ink: #ff8647;
+  --learning-bg: rgba(255, 134, 71, 0.16);
+  --focus-color: #6e7eff;
+  --focus-bg: rgba(110, 126, 255, 0.18);
 }
 
 [data-theme="light"] {
-  --canvas-bg: #f3f5fa;
-  --canvas-dot: rgba(71, 85, 105, 0.18);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --canvas-bg: #e2e8f6;
+  --canvas-radial: radial-gradient(circle at 50% 44%, #edf1fc 0%, #e2e8f6 60%, #d5def2 100%);
+  --canvas-dot: #a8b7dc;
+  --text-primary: #0d1333;
+  --text-secondary: #2e3b66;
+  --text-muted: #4b5a87;
 
-  --glass-bg: rgba(255, 255, 255, 0.68);
-  --glass-bg-elevated: rgba(255, 255, 255, 0.84);
-  --glass-border: rgba(15, 23, 42, 0.1);
-  --glass-rim: rgba(255, 255, 255, 0.92);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.98);
+  --glass-border: #b3c3ea;
+  --glass-rim: rgba(255, 255, 255, 1);
   --glass-shadow:
-    0 20px 40px -15px rgba(15, 23, 42, 0.14),
-    0 8px 18px -6px rgba(15, 23, 42, 0.08),
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(15, 23, 42, 0.04);
+    0 14px 30px -10px rgba(20, 32, 82, 0.16),
+    0 4px 10px -2px rgba(20, 32, 82, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(91, 103, 241, 0.08);
   --glass-shadow-hover:
-    0 28px 54px -14px rgba(15, 23, 42, 0.2),
-    0 12px 24px -8px rgba(15, 23, 42, 0.12),
-    inset 0 1.5px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(15, 23, 42, 0.06);
-  --hud-bg: rgba(255, 255, 255, 0.76);
-  --chip-bg: rgba(15, 23, 42, 0.05);
-  --chip-border: rgba(15, 23, 42, 0.1);
+    0 22px 44px -10px rgba(28, 42, 105, 0.24),
+    0 10px 20px -6px rgba(28, 42, 105, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(91, 103, 241, 0.12);
+  --hud-bg: rgba(255, 255, 255, 0.93);
+  --chip-bg: #e6ecfa;
+  --chip-border: #b8c7eb;
+
+  --mastered-color: #16a34a;
+  --mastered-ink: #127335;
+  --mastered-bg: #e3f4e9;
+  --learning-color: #ea580c;
+  --learning-ink: #b53d00;
+  --learning-bg: #ffefe7;
+  --focus-color: #5b67f1;
+  --focus-bg: rgba(91, 103, 241, 0.13);
 }
 
 html,
@@ -68,37 +88,47 @@ body,
   background-color: var(--canvas-bg);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+[data-theme="light"] body {
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .font-mono-code {
   font-family: var(--font-mono);
 }
 
-/* 3D Glassmorphic Node Card */
+/* 3D Glassmorphic Node Card — zero resting GPU blur, 3D perspective tilt on hover */
 .glass-node-wrapper {
   perspective: 950px;
-  transform-style: preserve-3d;
 }
 
 .glass-node-3d {
   position: relative;
   background: var(--glass-bg);
-  backdrop-filter: blur(22px) saturate(165%);
-  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  backdrop-filter: blur(18px) saturate(155%);
+  -webkit-backdrop-filter: blur(18px) saturate(155%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0px);
+  transform: none;
   transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 220ms ease,
-    border-color 220ms ease,
-    opacity 220ms ease;
-  will-change: transform;
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    opacity 180ms ease;
+}
+
+[data-theme="light"] .glass-node-3d {
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border-width: 1.25px;
 }
 
 .glass-node-wrapper:hover .glass-node-3d {
+  background: var(--glass-bg-elevated);
   box-shadow: var(--glass-shadow-hover);
+  transform: perspective(950px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
 }
 
 /* Interactive cursor specular sheen */
@@ -120,7 +150,7 @@ body,
 [data-theme="light"] .glass-node-3d::before {
   background: radial-gradient(
     240px circle at var(--mx, 50%) var(--my, 0%),
-    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.48),
     transparent 65%
   );
 }
@@ -129,9 +159,9 @@ body,
   opacity: 1;
 }
 
-/* Elevated 3D inner layer */
+/* Clean crisp text container (no Z-offset raster blur at rest) */
 .glass-depth-fg {
-  transform: translateZ(16px);
+  position: relative;
 }
 
 /* Floating Glass HUD Panels */

@@ -19,10 +19,13 @@ export interface BranchPalette {
   id: BranchId;
   name: string;
   accent: string;
+  ink: string;
+  pillBg: string;
   accentSoft: string;
   glow: string;
   badgeBg: string;
   badgeText: string;
+  rim: string;
   edgeColor: string;
 }
 
@@ -55,6 +58,7 @@ export interface SyllabusFlowNodeData extends Record<string, unknown> {
   isSearchMatch: boolean;
   mastery: MasteryStatus;
   stats: SubtreeStats;
+  theme: ThemeMode;
   layoutMode: LayoutMode;
   side: 'center' | 'left' | 'right' | 'bottom';
   onToggleCollapse: (id: string) => void;

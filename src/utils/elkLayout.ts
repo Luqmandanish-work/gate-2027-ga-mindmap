@@ -1,6 +1,6 @@
 import ELK from 'elkjs/lib/elk.bundled.js';
 import type { Edge, Node } from '@xyflow/react';
-import { BRANCH_PALETTES } from '../data/gaSyllabus';
+import { getBranchPalette } from '../data/gaSyllabus';
 import type {
   FilterMode,
   GlowEdgeData,
@@ -8,6 +8,7 @@ import type {
   MasteryStatus,
   SyllabusFlowNodeData,
   SyllabusTreeNode,
+  ThemeMode,
 } from '../types/syllabus';
 import {
   computeSubtreeStats,
@@ -77,6 +78,7 @@ export function collectVisibleSubtree(
 
 interface LayoutRunParams {
   root: SyllabusTreeNode;
+  theme: ThemeMode;
   layoutMode: LayoutMode;
   collapsedIds: Set<string>;
   isolatedBranchId: string | null;
@@ -139,6 +141,7 @@ export async function computeMindmapLayout(
 }> {
   const {
     root,
+    theme,
     layoutMode,
     collapsedIds,
     isolatedBranchId,
@@ -242,7 +245,7 @@ export async function computeMindmapLayout(
   const flowNodes: Array<Node<SyllabusFlowNodeData>> = visibleNodes.map((node) => {
     const pos = positions.get(node.id) ?? { x: 0, y: 0 };
     const size = estimateNodeSize(node);
-    const palette = BRANCH_PALETTES[node.branch];
+    const palette = getBranchPalette(node.branch, theme);
     const hasChildren = Boolean(node.children && node.children.length > 0);
     const isCollapsed = collapsedIds.has(node.id);
     const hiddenDescendantCount = isCollapsed ? countDescendants(node) : 0;
@@ -271,6 +274,7 @@ export async function computeMindmapLayout(
         isSearchMatch,
         mastery: masteryMap[node.id] ?? 'todo',
         stats: computeSubtreeStats(node, masteryMap),
+        theme,
         layoutMode,
         side: sides.get(node.id) ?? 'right',
         onToggleCollapse,
@@ -283,7 +287,7 @@ export async function computeMindmapLayout(
   const flowEdges: Array<Edge<GlowEdgeData>> = edgePairs.map(({ source, target }) => {
     const targetNode = byId.get(target);
     const branch = targetNode?.branch ?? 'root';
-    const palette = BRANCH_PALETTES[branch];
+    const palette = getBranchPalette(branch, theme);
     const targetSide = sides.get(target) ?? 'right';
 
     let sourceHandle = 'out-right';

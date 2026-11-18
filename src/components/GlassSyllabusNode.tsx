@@ -51,30 +51,33 @@ function MasteryDot({
       style={{
         borderColor:
           status === 'mastered'
-            ? '#10b981'
+            ? 'var(--mastered-color)'
             : status === 'learning'
-              ? '#f59e0b'
-              : 'rgba(148, 163, 184, 0.35)',
+              ? 'var(--learning-color)'
+              : 'rgba(138, 154, 225, 0.42)',
         backgroundColor:
           status === 'mastered'
-            ? 'rgba(16, 185, 129, 0.22)'
+            ? 'var(--mastered-bg)'
             : status === 'learning'
-              ? 'rgba(245, 158, 11, 0.2)'
-              : 'rgba(148, 163, 184, 0.08)',
+              ? 'var(--learning-bg)'
+              : 'var(--chip-bg)',
         boxShadow:
           status === 'mastered'
-            ? '0 0 12px rgba(16, 185, 129, 0.5)'
+            ? '0 0 12px rgba(60, 232, 120, 0.42)'
             : status === 'learning'
-              ? '0 0 10px rgba(245, 158, 11, 0.35)'
-              : `0 0 0 1px ${accent}15`,
+              ? '0 0 10px rgba(255, 134, 71, 0.35)'
+              : `0 0 0 1px ${accent}22`,
       }}
     >
       {status === 'mastered' ? (
-        <Check className="h-3 w-3 text-emerald-400" strokeWidth={3} />
+        <Check className="h-3 w-3" style={{ color: 'var(--mastered-ink)' }} strokeWidth={3} />
       ) : status === 'learning' ? (
-        <Clock className="h-2.5 w-2.5 text-amber-400" strokeWidth={2.5} />
+        <Clock className="h-2.5 w-2.5" style={{ color: 'var(--learning-ink)' }} strokeWidth={2.5} />
       ) : (
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-400/50 transition-colors group-hover/dot:bg-slate-200" />
+        <span
+          className="h-1.5 w-1.5 rounded-full transition-transform group-hover/dot:scale-125"
+          style={{ backgroundColor: accent, opacity: 0.65 }}
+        />
       )}
     </button>
   );
@@ -105,6 +108,7 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
     isSearchMatch,
     mastery,
     stats,
+    theme,
     onToggleCollapse,
     onCycleMastery,
     onHoverNode,
@@ -140,13 +144,19 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
   };
 
   const borderColor = isSearchMatch
-    ? '#38bdf8'
+    ? theme === 'light'
+      ? '#4F46E5'
+      : '#8C9EFF'
     : isSelected || isHighlighted
       ? palette.accent
-      : undefined;
+      : isLeaf && mastery === 'mastered'
+        ? 'var(--mastered-color)'
+        : isLeaf && mastery === 'learning'
+          ? 'var(--learning-color)'
+          : palette.rim;
 
   const dynamicGlow = isSearchMatch
-    ? '0 0 28px rgba(56, 189, 248, 0.55), var(--glass-shadow-hover)'
+    ? `0 0 28px ${theme === 'light' ? 'rgba(79, 70, 229, 0.35)' : 'rgba(140, 158, 255, 0.58)'}, var(--glass-shadow-hover)`
     : isSelected
       ? `0 0 32px ${palette.glow}, var(--glass-shadow-hover)`
       : isHighlighted
@@ -189,10 +199,16 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
           borderColor,
           boxShadow: dynamicGlow,
           backgroundImage: isRoot
-            ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(139, 92, 246, 0.16) 55%, rgba(16, 185, 129, 0.14) 100%)'
+            ? theme === 'light'
+              ? 'linear-gradient(135deg, rgba(99, 66, 245, 0.14) 0%, rgba(0, 140, 224, 0.1) 52%, rgba(255, 194, 51, 0.16) 100%)'
+              : 'linear-gradient(135deg, rgba(142, 116, 255, 0.28) 0%, rgba(77, 184, 255, 0.18) 52%, rgba(255, 99, 161, 0.18) 100%)'
             : isSection
-              ? `linear-gradient(135deg, ${palette.accentSoft} 0%, rgba(255,255,255,0.02) 100%)`
-              : undefined,
+              ? `linear-gradient(135deg, ${palette.accentSoft} 0%, rgba(255,255,255,0.03) 100%)`
+              : isLeaf && mastery === 'mastered'
+                ? `linear-gradient(135deg, var(--mastered-bg) 0%, transparent 100%)`
+                : isLeaf && mastery === 'learning'
+                  ? `linear-gradient(135deg, var(--learning-bg) 0%, transparent 100%)`
+                  : undefined,
         }}
       >
         {/* Top or Left glowing accent bar */}
@@ -210,7 +226,7 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
             <div className="flex items-center justify-between gap-2">
               <span
                 className="font-mono-code inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wider uppercase"
-                style={{ backgroundColor: palette.badgeBg, color: palette.accent }}
+                style={{ backgroundColor: palette.badgeBg, color: palette.badgeText }}
               >
                 <Sparkles className="h-3 w-3" />
                 GATE 2027 · GA
@@ -225,12 +241,15 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
             </div>
 
             <div className="flex items-center justify-between gap-2">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-500/20">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--chip-bg)]">
                 <div
                   className="h-full rounded-full transition-all duration-300"
                   style={{
                     width: `${pct}%`,
-                    background: 'linear-gradient(90deg, #38bdf8, #10b981)',
+                    background:
+                      theme === 'light'
+                        ? 'linear-gradient(90deg, #6342F5, #16A34A)'
+                        : 'linear-gradient(90deg, #AE94FF, #3CE878)',
                   }}
                 />
               </div>
@@ -245,13 +264,13 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
               <div className="flex items-center gap-1.5">
                 <span
                   className="flex h-6 w-6 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: palette.badgeBg, color: palette.accent }}
+                  style={{ backgroundColor: palette.badgeBg, color: palette.badgeText }}
                 >
                   <BranchIcon branch={node.branch} className="h-3.5 w-3.5" />
                 </span>
                 <span
                   className="font-mono-code rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
-                  style={{ backgroundColor: palette.badgeBg, color: palette.accent }}
+                  style={{ backgroundColor: palette.badgeBg, color: palette.badgeText }}
                 >
                   SEC {node.code}
                 </span>
@@ -290,7 +309,7 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
               {node.label.replace(/^Section \d+:\s*/, '')}
             </div>
 
-            <div className="h-1 w-full overflow-hidden rounded-full bg-slate-500/20">
+            <div className="h-1 w-full overflow-hidden rounded-full bg-[var(--chip-bg)]">
               <div
                 className="h-full rounded-full transition-all duration-300"
                 style={{ width: `${pct}%`, backgroundColor: palette.accent }}
@@ -305,12 +324,12 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
                 style={{
                   backgroundColor:
                     node.origin === 'conceptual-group'
-                      ? 'rgba(148, 163, 184, 0.14)'
+                      ? 'var(--chip-bg)'
                       : palette.badgeBg,
                   color:
                     node.origin === 'conceptual-group'
                       ? 'var(--text-secondary)'
-                      : palette.accent,
+                      : palette.badgeText,
                 }}
               >
                 {node.code}
@@ -323,7 +342,7 @@ export const GlassSyllabusNode = memo(function GlassSyllabusNode({
                       : node.origin === 'conceptual-group'
                         ? 'text-[11.5px] font-semibold text-[var(--text-secondary)]'
                         : 'text-[12px] font-medium text-[var(--text-primary)]'
-                  } ${isLeaf && mastery === 'mastered' ? 'line-through decoration-emerald-400/70 opacity-85' : ''}`}
+                  }`}
                 >
                   {node.label}
                 </div>

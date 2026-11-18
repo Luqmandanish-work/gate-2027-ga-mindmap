@@ -31,7 +31,7 @@ export const GlowBezierEdge = memo(function GlowBezierEdge({
   return (
     <g
       style={{
-        opacity: isDimmed ? 0.14 : isHighlighted ? 1 : 0.62,
+        opacity: isDimmed ? 0.16 : isHighlighted ? 1 : 0.84,
         transition: 'opacity 220ms ease',
       }}
     >
@@ -40,8 +40,8 @@ export const GlowBezierEdge = memo(function GlowBezierEdge({
           d={edgePath}
           fill="none"
           stroke={color}
-          strokeWidth={6}
-          strokeOpacity={0.22}
+          strokeWidth={7}
+          strokeOpacity={0.28}
           strokeLinecap="round"
         />
       )}
@@ -50,7 +50,7 @@ export const GlowBezierEdge = memo(function GlowBezierEdge({
         path={edgePath}
         style={{
           stroke: color,
-          strokeWidth: isHighlighted ? 2.4 : 1.6,
+          strokeWidth: isHighlighted ? 2.6 : 2,
           strokeLinecap: 'round',
         }}
       />

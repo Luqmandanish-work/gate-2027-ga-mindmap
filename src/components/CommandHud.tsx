@@ -14,7 +14,7 @@ import {
   Sun,
   X,
 } from 'lucide-react';
-import { BRANCH_PALETTES, GA_EXAM_META } from '../data/gaSyllabus';
+import { getBranchPalette, GA_EXAM_META } from '../data/gaSyllabus';
 import type { LayoutMode, SyllabusTreeNode, ThemeMode } from '../types/syllabus';
 
 interface CommandHudProps {
@@ -89,7 +89,7 @@ export function CommandHud({
           className="glass-hud flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-semibold text-[var(--text-primary)] transition hover:scale-105"
           title="Exit Zen Mode (Z)"
         >
-          <Eye className="h-3.5 w-3.5 text-sky-400" />
+          <Eye className="h-3.5 w-3.5" style={{ color: 'var(--focus-color)' }} />
           <span>Show Controls</span>
         </button>
       </div>
@@ -101,13 +101,31 @@ export function CommandHud({
       <div className="glass-hud pointer-events-auto flex flex-wrap items-center justify-between gap-2 rounded-2xl px-3 py-2 lg:flex-nowrap">
         {/* Identity */}
         <div className="flex items-center gap-2 pr-1">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/25 via-violet-500/25 to-emerald-400/25 ring-1 ring-white/20">
-            <Sparkles className="h-4 w-4 text-sky-400" />
+          <div
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ring-1 ring-white/25"
+            style={{
+              background:
+                theme === 'light'
+                  ? 'linear-gradient(135deg, rgba(99,66,245,0.18), rgba(0,140,224,0.18), rgba(255,194,51,0.22))'
+                  : 'linear-gradient(135deg, rgba(174,148,255,0.32), rgba(77,184,255,0.26), rgba(255,208,56,0.22))',
+            }}
+          >
+            <Sparkles
+              className="h-4 w-4"
+              style={{ color: theme === 'light' ? '#6342F5' : '#AE94FF' }}
+            />
           </div>
           <div className="leading-tight">
             <div className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-[var(--text-primary)]">
               <span>{GA_EXAM_META.exam} · GA Mindmap</span>
-              <span className="font-mono-code rounded-md bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-sky-400">
+              <span
+                className="font-mono-code rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
+                style={
+                  theme === 'light'
+                    ? { backgroundColor: '#FFC233', color: '#11183C' }
+                    : { backgroundColor: 'rgba(255, 208, 56, 0.2)', color: '#FFD038' }
+                }
+              >
                 15M
               </span>
             </div>
@@ -149,7 +167,7 @@ export function CommandHud({
           {searchFocused && searchMatches.length > 0 && (
             <div className="glass-hud thin-scroll absolute top-full left-0 mt-2 max-h-64 w-72 overflow-y-auto rounded-xl p-1.5">
               {searchMatches.map((match) => {
-                const pal = BRANCH_PALETTES[match.branch];
+                const pal = getBranchPalette(match.branch, theme);
                 return (
                   <button
                     key={match.id}
@@ -159,7 +177,7 @@ export function CommandHud({
                   >
                     <span
                       className="font-mono-code shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold"
-                      style={{ backgroundColor: pal.badgeBg, color: pal.accent }}
+                      style={{ backgroundColor: pal.badgeBg, color: pal.badgeText }}
                     >
                       {match.code}
                     </span>
@@ -185,9 +203,18 @@ export function CommandHud({
                 onClick={() => onLayoutChange(opt.id)}
                 className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold transition ${
                   active
-                    ? 'bg-sky-500/20 text-sky-400 shadow-sm ring-1 ring-sky-400/30'
+                    ? 'shadow-sm ring-1'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
+                style={
+                  active
+                    ? {
+                        backgroundColor: 'var(--focus-bg)',
+                        color: theme === 'light' ? '#5130DC' : '#AE94FF',
+                        borderColor: 'var(--focus-color)',
+                      }
+                    : undefined
+                }
               >
                 <Icon className="h-3.5 w-3.5" />
                 <span className="hidden md:inline">{opt.label}</span>
@@ -246,11 +273,21 @@ export function CommandHud({
       {isolatedBranchId && (
         <div className="glass-hud pointer-events-auto flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-medium">
           <span className="text-[var(--text-secondary)]">Focused Subtree:</span>
-          <span className="font-mono-code font-bold text-sky-400">{isolatedBranchId}</span>
+          <span
+            className="font-mono-code font-bold"
+            style={{ color: theme === 'light' ? '#5130DC' : '#AE94FF' }}
+          >
+            {isolatedBranchId}
+          </span>
           <button
             type="button"
             onClick={onClearIsolation}
-            className="ml-1 rounded-full bg-rose-500/20 px-2 py-0.5 text-[11px] font-semibold text-rose-400 transition hover:bg-rose-500/30"
+            className="ml-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition"
+            style={
+              theme === 'light'
+                ? { backgroundColor: '#FDE7EF', color: '#BE185D' }
+                : { backgroundColor: 'rgba(255, 99, 161, 0.2)', color: '#FF8AB8' }
+            }
           >
             Show Full Map
           </button>

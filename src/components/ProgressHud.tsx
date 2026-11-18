@@ -37,7 +37,7 @@ export function ProgressHud({
               cy="18"
               r="14"
               fill="none"
-              stroke="rgba(148,163,184,0.22)"
+              stroke="var(--chip-border)"
               strokeWidth="3.5"
             />
             <circle
@@ -45,7 +45,7 @@ export function ProgressHud({
               cy="18"
               r="14"
               fill="none"
-              stroke="#10b981"
+              stroke="var(--mastered-color)"
               strokeWidth="3.5"
               strokeLinecap="round"
               strokeDasharray={`${(pct / 100) * 88} 88`}
@@ -75,9 +75,18 @@ export function ProgressHud({
             onClick={() => onFilterChange(mode)}
             className={`rounded-xl px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
               filterMode === mode
-                ? 'bg-sky-500/20 text-sky-400 ring-1 ring-sky-400/30'
+                ? 'ring-1'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
+            style={
+              filterMode === mode
+                ? {
+                    backgroundColor: 'var(--focus-bg)',
+                    color: 'var(--focus-color)',
+                    borderColor: 'var(--focus-color)',
+                  }
+                : undefined
+            }
           >
             {mode}
           </button>
@@ -91,7 +100,7 @@ export function ProgressHud({
           onClick={() => setMenuOpen((o) => !o)}
           className="glass-hud flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] transition hover:border-sky-400/40"
         >
-          <Download className="h-3.5 w-3.5 text-sky-400" />
+          <Download className="h-3.5 w-3.5" style={{ color: 'var(--focus-color)' }} />
           <span>Export</span>
         </button>
 
@@ -105,7 +114,7 @@ export function ProgressHud({
               }}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left font-medium text-[var(--text-primary)] hover:bg-[var(--chip-bg)]"
             >
-              <ImageIcon className="h-3.5 w-3.5 text-emerald-400" />
+              <ImageIcon className="h-3.5 w-3.5" style={{ color: 'var(--mastered-ink)' }} />
               <span>Download PNG</span>
             </button>
             <button
@@ -116,7 +125,7 @@ export function ProgressHud({
               }}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left font-medium text-[var(--text-primary)] hover:bg-[var(--chip-bg)]"
             >
-              <FileText className="h-3.5 w-3.5 text-amber-400" />
+              <FileText className="h-3.5 w-3.5" style={{ color: 'var(--learning-ink)' }} />
               <span>Export Markdown (.md)</span>
             </button>
             <button
@@ -127,7 +136,7 @@ export function ProgressHud({
               }}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left font-medium text-[var(--text-primary)] hover:bg-[var(--chip-bg)]"
             >
-              <FileCode2 className="h-3.5 w-3.5 text-violet-400" />
+              <FileCode2 className="h-3.5 w-3.5" style={{ color: 'var(--focus-color)' }} />
               <span>Export JSON State</span>
             </button>
           </div>

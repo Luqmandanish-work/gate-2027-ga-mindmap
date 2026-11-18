@@ -20,7 +20,7 @@ import { GlassSyllabusNode } from './components/GlassSyllabusNode';
 import { GlowBezierEdge } from './components/GlowBezierEdge';
 import { InspectorDrawer } from './components/InspectorDrawer';
 import { ProgressHud } from './components/ProgressHud';
-import { BRANCH_PALETTES, GA_SYLLABUS_TREE } from './data/gaSyllabus';
+import { GA_SYLLABUS_TREE, getBranchPalette } from './data/gaSyllabus';
 import type {
   FilterMode,
   GlowEdgeData,
@@ -178,18 +178,20 @@ function MindmapCanvas() {
 
   // Ref holds latest callbacks/visual state so topology-only layout effect doesn't re-run ELK on hover
   const stateRef = useRef({
+    theme,
     selectedId,
     hoveredId,
     searchQuery,
     masteryMap,
   });
-  stateRef.current = { selectedId, hoveredId, searchQuery, masteryMap };
+  stateRef.current = { theme, selectedId, hoveredId, searchQuery, masteryMap };
 
   // 1. Structural ELK layout pass (only on topology/layout/filter changes)
   useEffect(() => {
     let cancelled = false;
     computeMindmapLayout({
       root: GA_SYLLABUS_TREE,
+      theme: stateRef.current.theme,
       layoutMode,
       collapsedIds,
       isolatedBranchId,
@@ -248,10 +250,14 @@ function MindmapCanvas() {
           q.length > 0 &&
           (treeNode.label.toLowerCase().includes(q) || treeNode.code.toLowerCase().includes(q));
 
+        const palette = getBranchPalette(treeNode.branch, theme);
+
         return {
           ...flowNode,
           data: {
             ...flowNode.data,
+            palette,
+            theme,
             isSelected: selectedId === treeNode.id,
             isHighlighted,
             isDimmed,
@@ -265,6 +271,8 @@ function MindmapCanvas() {
 
     setEdges((prev) =>
       prev.map((edge) => {
+        const targetNode = treeIndex.byId.get(edge.target);
+        const branchPalette = getBranchPalette(targetNode?.branch ?? 'root', theme);
         const isHighlighted = activeSet
           ? activeSet.has(edge.source) && activeSet.has(edge.target)
           : false;
@@ -272,14 +280,14 @@ function MindmapCanvas() {
         return {
           ...edge,
           data: {
-            color: edge.data?.color ?? '#60a5fa',
+            color: branchPalette.edgeColor,
             isHighlighted,
             isDimmed,
           },
         };
       }),
     );
-  }, [selectedId, hoveredId, searchQuery, masteryMap, treeIndex, setNodes, setEdges]);
+  }, [theme, selectedId, hoveredId, searchQuery, masteryMap, treeIndex, setNodes, setEdges]);
 
   const handleJumpToNode = useCallback(
     (id: string) => {
@@ -348,7 +356,7 @@ function MindmapCanvas() {
 
     try {
       const dataUrl = await toPng(viewportEl, {
-        backgroundColor: theme === 'dark' ? '#060811' : '#f3f5fa',
+        backgroundColor: theme === 'dark' ? '#0f152b' : '#e2e8f6',
         width,
         height,
         style: {
@@ -391,25 +399,49 @@ function MindmapCanvas() {
   const selectedTreeNode = selectedId ? treeIndex.byId.get(selectedId) ?? null : null;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[var(--canvas-bg)]">
-      {/* Ambient Volumetric 3D Aurora Orbs */}
+    <div
+      className="relative h-screen w-screen overflow-hidden bg-[var(--canvas-bg)]"
+      style={{ backgroundImage: 'var(--canvas-radial)' }}
+    >
+      {/* Ambient Volumetric 3D Aurora Orbs (Dual-Mode Color Psychology Engineered) */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div
-          className="ambient-orb absolute -top-36 -left-24 h-[460px] w-[460px] rounded-full opacity-35 blur-[130px]"
-          style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.45), transparent 70%)' }}
-        />
-        <div
-          className="ambient-orb absolute top-1/4 -right-28 h-[500px] w-[500px] rounded-full opacity-30 blur-[140px]"
+          className="ambient-orb absolute -top-32 -left-24 h-[480px] w-[480px] rounded-full blur-[95px]"
           style={{
-            background: 'radial-gradient(circle, rgba(245,158,11,0.42), transparent 70%)',
-            animationDelay: '-5s',
+            background:
+              theme === 'light'
+                ? 'radial-gradient(circle, rgba(165, 180, 252, 0.22), transparent 70%)'
+                : 'radial-gradient(circle, rgba(109, 93, 252, 0.28), transparent 70%)',
           }}
         />
         <div
-          className="ambient-orb absolute -bottom-32 left-1/3 h-[440px] w-[440px] rounded-full opacity-30 blur-[135px]"
+          className="ambient-orb absolute top-10 -right-24 h-[460px] w-[460px] rounded-full blur-[95px]"
           style={{
-            background: 'radial-gradient(circle, rgba(139,92,246,0.45), transparent 70%)',
-            animationDelay: '-10s',
+            background:
+              theme === 'light'
+                ? 'radial-gradient(circle, rgba(94, 234, 212, 0.18), transparent 70%)'
+                : 'radial-gradient(circle, rgba(20, 216, 232, 0.22), transparent 70%)',
+            animationDelay: '-4s',
+          }}
+        />
+        <div
+          className="ambient-orb absolute -bottom-28 right-1/4 h-[460px] w-[460px] rounded-full blur-[95px]"
+          style={{
+            background:
+              theme === 'light'
+                ? 'radial-gradient(circle, rgba(253, 186, 116, 0.2), transparent 70%)'
+                : 'radial-gradient(circle, rgba(255, 138, 61, 0.2), transparent 70%)',
+            animationDelay: '-8s',
+          }}
+        />
+        <div
+          className="ambient-orb absolute -bottom-24 left-1/5 h-[440px] w-[440px] rounded-full blur-[95px]"
+          style={{
+            background:
+              theme === 'light'
+                ? 'radial-gradient(circle, rgba(249, 168, 212, 0.18), transparent 70%)'
+                : 'radial-gradient(circle, rgba(232, 76, 168, 0.2), transparent 70%)',
+            animationDelay: '-12s',
           }}
         />
       </div>
@@ -449,8 +481,8 @@ function MindmapCanvas() {
         <Background
           variant={BackgroundVariant.Dots}
           gap={24}
-          size={1.4}
-          color={theme === 'dark' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(71, 85, 105, 0.22)'}
+          size={1.45}
+          color={theme === 'dark' ? '#2a3970' : '#a8b7dc'}
         />
 
         {!zenMode && (
@@ -464,9 +496,9 @@ function MindmapCanvas() {
                 style={{ width: 148, height: 96 }}
                 nodeColor={(n) => {
                   const branch = (n.data as SyllabusFlowNodeData | undefined)?.node.branch ?? 'root';
-                  return BRANCH_PALETTES[branch].accent;
+                  return getBranchPalette(branch, theme).accent;
                 }}
-                maskColor={theme === 'dark' ? 'rgba(6, 8, 17, 0.72)' : 'rgba(243, 245, 250, 0.72)'}
+                maskColor={theme === 'dark' ? 'rgba(15, 21, 43, 0.72)' : 'rgba(226, 232, 246, 0.72)'}
               />
             )}
           </>
@@ -486,6 +518,7 @@ function MindmapCanvas() {
       {!zenMode && (
         <InspectorDrawer
           node={selectedTreeNode}
+          theme={theme}
           byId={treeIndex.byId}
           parentById={treeIndex.parentById}
           masteryMap={masteryMap}
