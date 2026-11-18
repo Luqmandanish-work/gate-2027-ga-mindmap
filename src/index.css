@@ -1,0 +1,234 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+:root {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --canvas-bg: #060811;
+  --canvas-dot: rgba(148, 163, 184, 0.16);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --glass-bg: rgba(15, 23, 42, 0.56);
+  --glass-bg-elevated: rgba(17, 25, 45, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-rim: rgba(255, 255, 255, 0.24);
+  --glass-shadow:
+    0 24px 48px -14px rgba(0, 0, 0, 0.72),
+    0 8px 20px -6px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  --glass-shadow-hover:
+    0 32px 60px -12px rgba(0, 0, 0, 0.85),
+    0 14px 28px -8px rgba(0, 0, 0, 0.56),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  --hud-bg: rgba(11, 16, 30, 0.74);
+  --chip-bg: rgba(255, 255, 255, 0.06);
+  --chip-border: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="light"] {
+  --canvas-bg: #f3f5fa;
+  --canvas-dot: rgba(71, 85, 105, 0.18);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.84);
+  --glass-border: rgba(15, 23, 42, 0.1);
+  --glass-rim: rgba(255, 255, 255, 0.92);
+  --glass-shadow:
+    0 20px 40px -15px rgba(15, 23, 42, 0.14),
+    0 8px 18px -6px rgba(15, 23, 42, 0.08),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(15, 23, 42, 0.04);
+  --glass-shadow-hover:
+    0 28px 54px -14px rgba(15, 23, 42, 0.2),
+    0 12px 24px -8px rgba(15, 23, 42, 0.12),
+    inset 0 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(15, 23, 42, 0.06);
+  --hud-bg: rgba(255, 255, 255, 0.76);
+  --chip-bg: rgba(15, 23, 42, 0.05);
+  --chip-border: rgba(15, 23, 42, 0.1);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono-code {
+  font-family: var(--font-mono);
+}
+
+/* 3D Glassmorphic Node Card */
+.glass-node-wrapper {
+  perspective: 950px;
+  transform-style: preserve-3d;
+}
+
+.glass-node-3d {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0px);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    opacity 220ms ease;
+  will-change: transform;
+}
+
+.glass-node-wrapper:hover .glass-node-3d {
+  box-shadow: var(--glass-shadow-hover);
+}
+
+/* Interactive cursor specular sheen */
+.glass-node-3d::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(255, 255, 255, 0.18),
+    transparent 65%
+  );
+  opacity: var(--sheen, 0);
+  transition: opacity 220ms ease;
+}
+
+[data-theme="light"] .glass-node-3d::before {
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(255, 255, 255, 0.72),
+    transparent 65%
+  );
+}
+
+.glass-node-wrapper:hover .glass-node-3d::before {
+  opacity: 1;
+}
+
+/* Elevated 3D inner layer */
+.glass-depth-fg {
+  transform: translateZ(16px);
+}
+
+/* Floating Glass HUD Panels */
+.glass-hud {
+  background: var(--hud-bg);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Ambient aurora orbs */
+@keyframes floatOrbSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -20px, 0) scale(1.06);
+  }
+}
+
+.ambient-orb {
+  animation: floatOrbSlow 16s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Animated edge pulse for active paths */
+@keyframes edgeFlowDash {
+  from {
+    stroke-dashoffset: 36;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.edge-flow-animated {
+  stroke-dasharray: 7 5;
+  animation: edgeFlowDash 1.4s linear infinite;
+}
+
+/* React Flow HUD overrides to match glassmorphism */
+.react-flow__controls {
+  background: var(--hud-bg) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--glass-shadow) !important;
+  overflow: hidden;
+  padding: 4px !important;
+  gap: 2px;
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: var(--text-secondary) !important;
+  fill: currentColor !important;
+  width: 30px !important;
+  height: 30px !important;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--chip-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor !important;
+}
+
+.react-flow__minimap {
+  background: var(--hud-bg) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--glass-shadow) !important;
+  overflow: hidden;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* Subtle custom scrollbars for drawer/search */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+}
